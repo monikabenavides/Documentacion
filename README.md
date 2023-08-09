@@ -11,7 +11,7 @@ This is for robust face detection and face recognition. This a Node.js wrapper l
 <a name="install"></a>
 # Install
 
-##  Auto build
+##  Install
 Installing the package will build ebia-onboarding for you and download the models. Note, this might take some time.
 ``` bash
 npm install ebia-onboarding
@@ -29,84 +29,53 @@ npm install ebia-onboarding
 # How to use
 
 ``` javascript
-const fr = require('ebia-onboarding')
+import { EbiaOnboarding } from "ebia-onboarding";
 ```
 
-### Loading images from disk
-
-``` javascript
-const image1 = fr.loadImage('path/to/image1.png')
-const image2 = fr.loadImage('path/to/image2.jpg')
-```
-
-### Displaying Images
-
-``` javascript
-const win = new fr.ImageWindow()
-
-// display image
-win.setImage(image)
-
-// drawing the rectangle into the displayed image
-win.addOverlay(rectangle)
-
-// pause program until key pressed
-fr.hitEnterToContinue()
-```
-
-### Face Detection
-
-``` javascript
-const detector = fr.FaceDetector()
-```
-
-Detect all faces in the image and return the bounding rectangles:
-``` javascript
-const faceRectangles = detector.locateFaces(image)
-```
-
-Detect all faces and return them as separate images:
-``` javascript
-const faceImages = detector.detectFaces(image)
-```
-
-You can also specify the output size of the face images (default is 150 e.g. 150x150):
-``` javascript
-const targetSize = 200
-const faceImages = detector.detectFaces(image, targetSize)
-```
+## About Country
+The functionality depends on the country.
+For Ecuador, there is also the option of validation with the consulting Registro Civil Ecuador.
+For other countries, it is necessary to send the photo for easy recognition.
 
 ### Face Recognition
+#### Parameters
+*  documento_identidad: It will ask you to upload a photograph of both the front and the back of the identity document.
+*  servicio_basico: It will ask you to upload a basic service bill.
+*  pais: (EC->Ecuador, BO->Bolivia)
+*  prueba_vida: Options: PARPADEO, SONRISA, CARDINAL, BOSTEZO
+*  cedula: National identity card number
+*  nombres: First Name and Second Name
+*  apellidos: First Last Name and Second Last Name
+*  direccion: Address
+*  foto: URL of the photograph to make the comparison.
+*  letra_cedula: Font sizes of the titles for the capture of the photograph of the ID.
+*  letra_prueba_vida: Size of the letter of the titles for the capture of the recognition
+*  rekognitionSuccess: Successful response method.
+*  rekognitionError: Error response method.
+*  id_solicitud: Used to identify the process.
+*  id_empresa: Company ID registered at ebia.com.ec
+*  token: token generated with the input of the user, through api.
 
+example of use
 ``` javascript
-const recognizer = fr.FaceRecognizer()
-```
-
-Train the recognizer with face images of atleast two different persons:
-``` javascript
-// arrays of face images, (use FaceDetector to detect and extract faces)
-const sheldonFaces = [ ... ]
-const rajFaces = [ ... ]
-const howardFaces = [ ... ]
-
-recognizer.addFaces(sheldonFaces, 'sheldon')
-recognizer.addFaces(rajFaces, 'raj')
-recognizer.addFaces(howardFaces, 'howard')
-```
-
-You can also jitter the training data, which will apply transformations such as rotation, scaling and mirroring to create different versions of each input face. Increasing the number of jittered version may increase prediction accuracy but also increases training time:
-``` javascript
-const numJitters = 15
-recognizer.addFaces(sheldonFaces, 'sheldon', numJitters)
-recognizer.addFaces(rajFaces, 'raj', numJitters)
-recognizer.addFaces(howardFaces, 'howard', numJitters)
-```
-
-Get the distances to each class:
-``` javascript
-const predictions = recognizer.predict(sheldonFaceImage)
-console.log(predictions)
-```
+<EbiaOnboarding
+            documento_identidad={false}
+            servicio_basico={false}
+            pais={"EC"}
+            prueba_vida={"PARPADEO"}
+            cedula={"1803231727"}
+            nombres={"MONICA CECILIA"}
+            apellidos={"BENAVIDES PINTO"}
+            direccion={"DE LOS HIGOS E1076 Y DE LOS CIRUELOS"}
+            foto={"https://elebus-rekognition.s3.amazonaws.com/personas/1710445097.jpg"}
+            letra_cedula={70}
+            letra_prueba_vida={40}
+            rekognitionSuccess={rekognitionSuccess}
+            rekognitionError={rekognitionError}
+            id_solicitud={23}
+            id_empresa={22}
+            token={"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaGVjayI6dHJ1ZSwiaWF0IjoxNjkxNTkyMjk1LCJleHAiOjE2OTE2Nzg2OTV9.b21NwICHH85Zm_e1lOLimsYsx8uo2BXvfPi1hShp97w"}
+/>
 
 example output (the lower the distance, the higher the similarity):
 ``` javascript
