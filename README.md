@@ -5,19 +5,19 @@ This is for robust face detection and face recognition. This a Node.js wrapper l
 ## Table of Contents 📋
 * **[Install](#install)**
 * **[How to use](#how-to-use)**
-* **[Async API](#async-api)**
+* **[Example](#example)**
 * **[With TypeScript](#with-typescript)**
 
 <a name="install"></a>
 # Install
 
-##  Install
+##  AutoBuild - npm Component
 Installing the package will build ebia-onboarding for you and download the models. Note, this might take some time.
 ``` bash
 npm install ebia-onboarding
 ```
 
-##  Manual build
+##  Manual build - Library
 If you want to use an own build of <a href="https://www.ebia.com.ec/assets/rekognition/react-ebia.js"><b>ebia-onboarding</b></a>:
 <script src="https://www.ebia.com.ec/assets/rekognition/react-ebia.js"></script>
 
@@ -55,8 +55,14 @@ For other countries, it is necessary to send the photo for easy recognition.
 *  id_solicitud: Used to identify the process.
 *  id_empresa: Company ID registered at ebia.com.ec
 *  token: token generated with the input of the user, through api.
+Only for Ecuador
+*  rc: Use of query to Registro Civil Ecuador
+*  huella: The first 6 digits of the fingerprint identifier. 
 
-example of use
+<a name="example"></a>
+# Example
+
+## Example of use without Registro Civil
 ``` javascript
 <EbiaOnboarding
             documento_identidad={false}
@@ -76,7 +82,25 @@ example of use
             id_empresa={22}
             token={"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaGVjayI6dHJ1ZSwiaWF0IjoxNjkxNTkyMjk1LCJleHAiOjE2OTE2Nzg2OTV9.b21NwICHH85Zm_e1lOLimsYsx8uo2BXvfPi1hShp97w"}
 />
-
+```
+## Example of use with Registro Civil
+``` javascript
+<EbiaOnboarding
+            cedula={"1803231727"}
+            nombres={"MONICA CECILIA"}
+	apellidos={"BENAVIDES PINTO"}
+	rc={true}
+	huella={"V2333E"}
+	prueba_vida={"SONRISA"}
+	letra_cedula={70}
+	letra_prueba_vida={50}
+	id_empresa={22}
+	id_solicitud={123456}
+	rekognitionSuccess={rekognitionSuccess}
+            rekognitionError={rekognitionError}
+	token={"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaGVjayI6dHJ1ZSwiaWF0IjoxNjkxMDk2MjYwLCJleHAiOjE2OTExODI2NjB9.xumxrHfWcBpN89QYIbEgC5it3e_m_j-CbFiYMdZnFYY"}
+/>
+```
 example output (the lower the distance, the higher the similarity):
 ``` javascript
 [
@@ -122,38 +146,12 @@ const modelState = require('model.json')
 recognizer.load(modelState)
 ```
 
-### Face Landmarks
+### Simple Example Component Autobuild
 
 This time using the FrontalFaceDetector (you can also use FaceDetector):
 ``` javascript
 const detector = new fr.FrontalFaceDetector()
 ```
 
-Use 5 point landmarks predictor:
-``` javascript
-const predictor = fr.FaceLandmark5Predictor()
-```
-
-Or 68 point landmarks predictor:
-``` javascript
-const predictor = fr.FaceLandmark68Predictor()
-```
-
-First get the bounding rectangles of the faces:
-``` javascript
-const img = fr.loadImage('image.png')
-const faceRects = detector.detect(img)
-```
-
-Find the face landmarks:
-``` javascript
-const shapes = faceRects.map(rect => predictor.predict(img, rect))
-```
-
-Display the face landmarks:
-``` javascript
-const win = new fr.ImageWindow()
-win.setImage(img)
-win.renderFaceDetections(shapes)
 fr.hitEnterToContinue()
 ```
